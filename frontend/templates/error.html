@@ -1,0 +1,3 @@
+{% extends 'base.html' %}
+{% block title %}{{ code }} · Ocorrências do laboratório{% endblock %}
+{% block content %}<section class="surface-card error-card"><span class="eyebrow">{{ code }}</span><h1>{{ message }}</h1><a class="btn btn-primary" href="{{ url_for('home') }}">Voltar ao início</a></section>{% endblock %}

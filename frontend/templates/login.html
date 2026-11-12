@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <title>Acessar · Ocorrências do laboratório</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link href="{{ url_for('static', filename='css/app.css') }}" rel="stylesheet">
+</head>
+<body class="login-page">
+  <main class="login-shell">
+    <section class="login-brand">
+      <div class="brand-mark brand-mark-lg">O</div>
+      <p class="eyebrow">TRANSFORMAÇÃO DIGITAL · MVP</p>
+      <h1>Ocorrências<br>do laboratório</h1>
+      <p class="login-lead">Registre um chamado e acompanhe cada etapa do atendimento.</p>
+      <div class="login-footnote">Demonstração didática com dados fictícios.</div>
+    </section>
+    <section class="login-form-wrap">
+      <div class="login-form-card">
+        <span class="form-kicker">BEM-VINDO</span>
+        <h2>Entre na sua conta</h2>
+        <p class="text-secondary mb-4">Use uma das contas de demonstração.</p>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% for category, message in messages %}<div class="alert alert-{{ category }}" role="alert">{{ message }}</div>{% endfor %}
+        {% endwith %}
+        <form method="post" action="{{ url_for('login') }}" class="vstack gap-3">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <div><label for="email" class="form-label">E-mail</label><input class="form-control form-control-lg" id="email" name="email" type="email" autocomplete="username" required placeholder="voce@exemplo.com"></div>
+          <div><label for="password" class="form-label">Senha</label><input class="form-control form-control-lg" id="password" name="password" type="password" autocomplete="current-password" required placeholder="Sua senha"></div>
+          <button class="btn btn-primary btn-lg mt-2" type="submit">Entrar</button>
+        </form>
+        <div class="demo-accounts mt-4">
+          <strong>Aluno</strong><span>aluna@example.test</span><span>Senha: <code>aluno123</code></span>
+          <hr><strong>Equipe técnica</strong><span>tecnico@example.test</span><span>Senha: <code>tecnico123</code></span>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>

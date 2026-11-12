@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Registrar ocorrência · Ocorrências do laboratório{% endblock %}
+{% block content %}
+<div class="page-heading"><a href="{{ url_for('student_dashboard') }}" class="back-link">← Voltar aos chamados</a><span class="eyebrow d-block mt-3">NOVO REGISTRO</span><h1>Registrar ocorrência</h1><p class="text-secondary">Descreva o que aconteceu para que a equipe técnica possa avaliar.</p></div>
+<div class="row g-4"><div class="col-lg-8"><section class="surface-card form-card">
+  <form id="newTicketForm" novalidate>
+    <div class="mb-3"><label class="form-label" for="title">Assunto <span class="required-mark">*</span></label><input class="form-control" id="title" name="title" maxlength="100" required placeholder="Ex.: projetor sem imagem"><div class="form-text">Resuma a ocorrência em poucas palavras.</div></div>
+    <div class="row g-3 mb-3"><div class="col-md-6"><label class="form-label" for="category">Categoria <span class="required-mark">*</span></label><select class="form-select" id="category" name="category" required><option value="">Selecione</option><option>Equipamento</option><option>Rede</option><option>Software</option><option>Conta e acesso</option><option>Outro</option></select></div><div class="col-md-6"><label class="form-label" for="location">Laboratório ou local <span class="required-mark">*</span></label><input class="form-control" id="location" name="location" maxlength="100" required placeholder="Informe o local"><div class="form-text">Campo livre neste MVP de demonstração.</div></div></div>
+    <div class="mb-3"><label class="form-label" for="description">Descrição <span class="required-mark">*</span></label><textarea class="form-control" id="description" name="description" rows="5" maxlength="1500" required placeholder="O que aconteceu? Em que situação? O que você já tentou?"></textarea><div class="form-text">Não inclua senha ou dado pessoal sensível.</div></div>
+    <div class="contact-reminder"><span class="contact-check">✓</span><div><strong>Contato para retorno</strong><p>Usaremos o e-mail ou telefone cadastrado no seu perfil. <a href="{{ url_for('profile_page') }}">Conferir contato</a></p></div></div>
+    <div class="d-flex flex-wrap justify-content-end gap-2 mt-4"><a class="btn btn-light" href="{{ url_for('student_dashboard') }}">Cancelar</a><button class="btn btn-primary" id="submitTicket" type="submit">Enviar chamado</button></div>
+  </form>
+</section></div><aside class="col-lg-4"><div class="help-card"><span class="help-icon">i</span><h3>O que acontece depois?</h3><ol><li>Você recebe um número de protocolo.</li><li>A equipe técnica avalia o chamado.</li><li>Se precisar de mais dados, você recebe uma solicitação.</li><li>O andamento aparece nesta área.</li></ol><p class="small text-secondary mb-0">Este sistema é um MVP didático com dados de exemplo.</p></div></aside></div>
+{% endblock %}
