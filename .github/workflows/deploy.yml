@@ -50,14 +50,8 @@ jobs:
           service_account: ${{ vars.GCP_DEPLOY_SERVICE_ACCOUNT }}
       - name: Set up gcloud
         uses: google-github-actions/setup-gcloud@v3
-      - name: Ensure Artifact Registry repository exists
-        shell: bash
-        run: |
-          gcloud artifacts repositories describe "$AR_REPOSITORY" \
-            --location="$REGION" --project="$PROJECT_ID" >/dev/null 2>&1 || \
-          gcloud artifacts repositories create "$AR_REPOSITORY" \
-            --repository-format=docker --location="$REGION" \
-            --project="$PROJECT_ID" --description="Images do MVP de ocorrências"
+      - name: Confirm Artifact Registry repository
+        run: gcloud artifacts repositories describe "$AR_REPOSITORY" --location="$REGION" --project="$PROJECT_ID"
       - name: Configure Docker authentication
         run: gcloud auth configure-docker "$REGION-docker.pkg.dev" --quiet
       - name: Build and publish container
@@ -77,3 +71,4 @@ jobs:
             --min=0 --max=1 --cpu=1 --memory=512Mi --concurrency=8 \
             --set-env-vars=COOKIE_SECURE=true,PGSSLMODE=require \
             --set-secrets=FLASK_SECRET_KEY=FLASK_SECRET_KEY:latest,PGHOST=PGHOST:latest,PGPORT=PGPORT:latest,PGDATABASE=PGDATABASE:latest,PGUSER=PGUSER:latest,PGPASSWORD=PGPASSWORD:latest
+

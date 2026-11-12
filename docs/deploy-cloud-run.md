@@ -67,10 +67,12 @@ gcloud iam service-accounts add-iam-policy-binding $DEPLOYER_EMAIL `
 
 gcloud projects add-iam-policy-binding $PROJECT_ID `
   --member="serviceAccount:$DEPLOYER_EMAIL" --role=roles/run.admin
-gcloud projects add-iam-policy-binding $PROJECT_ID `
-  --member="serviceAccount:$DEPLOYER_EMAIL" --role=roles/artifactregistry.admin
 gcloud artifacts repositories create registro-ocorrencias --project $PROJECT_ID `
   --repository-format=docker --location=us-central1
+
+gcloud artifacts repositories add-iam-policy-binding registro-ocorrencias `
+  --project $PROJECT_ID --location=us-central1 `
+  --member="serviceAccount:$DEPLOYER_EMAIL" --role=roles/artifactregistry.writer
 
 gcloud iam service-accounts add-iam-policy-binding $RUNTIME_EMAIL `
   --project $PROJECT_ID --member="serviceAccount:$DEPLOYER_EMAIL" `
@@ -86,7 +88,7 @@ Copie os três valores exibidos para as variáveis correspondentes do GitHub. O 
 
 ## 4. Salvar a configuração do PostgreSQL no Secret Manager
 
-No painel do Supabase, use os dados de conexão do **Session Pooler** (indicado para aplicações persistentes em redes IPv4). Crie estes segredos no Secret Manager do projeto, cada um com o valor correspondente da conexão:
+Os valores `url` e `publishableKey` usados pelo cliente Flutter são para as APIs do Supabase; não são credenciais de conexão PostgreSQL e não são usados por este backend Flask/Psycopg. No painel do Supabase, abra **Connect → Session Pooler** e use esses parâmetros para o backend. A conexão direta do plano Free é IPv6; o pooler de sessão atende redes IPv4 e usa a porta 5432. Crie estes segredos no Secret Manager do projeto, cada um com o valor correspondente da conexão:
 
 - `FLASK_SECRET_KEY`: chave aleatória longa para a sessão Flask.
 - `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, `PGPASSWORD`: dados do Session Pooler.
@@ -102,5 +104,7 @@ Acesse a URL de serviço apresentada pelo Cloud Run. A rota `/healthz` verifica 
 ## Limites da demonstração
 
 O plano gratuito do Supabase pode pausar um banco com pouca atividade. O Cloud Run pode cobrar consumo que exceder as franquias gratuitas, e o tráfego entre regiões pode gerar custos ou latência. Configure um alerta de orçamento no Google Cloud e monitore também o consumo do Supabase. Alertas avisam; eles não interrompem automaticamente o consumo.
+
+
 
 
