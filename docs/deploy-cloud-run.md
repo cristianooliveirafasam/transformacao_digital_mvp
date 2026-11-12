@@ -95,11 +95,12 @@ A conta `cloudrun-runtime` precisa da permissão **Secret Manager Secret Accesso
 
 ## 5. Executar o primeiro deploy
 
-Depois de criar as variáveis, os segredos e as permissões, envie uma alteração para `main`. O workflow **Deploy to Cloud Run** monta a imagem, publica no Artifact Registry e atualiza o Cloud Run. O serviço escala para zero quando está ocioso, com no máximo uma instância para manter o MVP dentro dos limites esperados para uma demonstração.
+Depois de criar as variáveis, os segredos e as permissões, envie uma alteração para `main`. O workflow de CI/CD monta primeiro a imagem. Após o build aprovado, o job **Deploy to Cloud Run** publica no Artifact Registry e atualiza o Cloud Run. O serviço escala para zero quando está ocioso, com no máximo uma instância para manter o MVP dentro dos limites esperados para uma demonstração.
 
 Acesse a URL de serviço apresentada pelo Cloud Run. A rota `/healthz` verifica a conexão com o PostgreSQL. Na primeira inicialização, o container cria as tabelas e os registros fictícios de exemplo.
 
 ## Limites da demonstração
 
 O plano gratuito do Supabase pode pausar um banco com pouca atividade. O Cloud Run pode cobrar consumo que exceder as franquias gratuitas, e o tráfego entre regiões pode gerar custos ou latência. Configure um alerta de orçamento no Google Cloud e monitore também o consumo do Supabase. Alertas avisam; eles não interrompem automaticamente o consumo.
+
 

@@ -1,6 +1,7 @@
-name: Deploy to Cloud Run
+name: CI/CD
 
 on:
+  pull_request:
   push:
     branches: [main]
   workflow_dispatch:
@@ -9,10 +10,25 @@ permissions:
   contents: read
 
 jobs:
+  build:
+    name: Build container
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get source
+        uses: actions/checkout@v7
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build container image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          tags: registro-ocorrencias-mvp:ci
+
   deploy:
-    # The Google Cloud OIDC values are repository variables. Until configured,
-    # CI still builds the container and this deployment job is skipped.
-    if: vars.GCP_WORKLOAD_IDENTITY_PROVIDER != '' && vars.GCP_DEPLOY_SERVICE_ACCOUNT != ''
+    name: Deploy to Cloud Run
+    needs: build
+    if: ${{ needs.build.result == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main' && vars.GCP_WORKLOAD_IDENTITY_PROVIDER != '' && vars.GCP_DEPLOY_SERVICE_ACCOUNT != '' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -45,7 +61,6 @@ jobs:
       - name: Configure Docker authentication
         run: gcloud auth configure-docker "$REGION-docker.pkg.dev" --quiet
       - name: Build and publish container
-        id: image
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -62,5 +77,3 @@ jobs:
             --min=0 --max=1 --cpu=1 --memory=512Mi --concurrency=8 \
             --set-env-vars=COOKIE_SECURE=true,PGSSLMODE=require \
             --set-secrets=FLASK_SECRET_KEY=FLASK_SECRET_KEY:latest,PGHOST=PGHOST:latest,PGPORT=PGPORT:latest,PGDATABASE=PGDATABASE:latest,PGUSER=PGUSER:latest,PGPASSWORD=PGPASSWORD:latest
-
-
