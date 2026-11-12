@@ -115,6 +115,15 @@ def close_db(_error: BaseException | None = None) -> None:
         connection.close()
 
 
+@app.get("/healthz")
+def healthz():
+    try:
+        get_db().execute("SELECT 1")
+    except psycopg.Error:
+        app.logger.exception("Verificação de saúde não conseguiu acessar o PostgreSQL.")
+        return jsonify(status="unavailable"), 503
+    return jsonify(status="ok")
+
 def init_db() -> None:
     # O banco informado em PGDATABASE já deve existir no serviço PostgreSQL.
     # A aplicação cria apenas as tabelas do MVP, sem exigir permissão CREATEDB.
@@ -838,15 +847,6 @@ def api_update_contact():
     return jsonify(ok=True)
 
 
-@app.get("/healthz")
-def healthz():
-    try:
-        get_db().execute("SELECT 1")
-    except psycopg.Error:
-        app.logger.exception("Verificação de saúde não conseguiu acessar o PostgreSQL.")
-        return jsonify(status="unavailable"), 503
-    return jsonify(status="ok")
-
 @app.errorhandler(400)
 def bad_request(error):
     if request.path.startswith("/api/"):
@@ -875,5 +875,6 @@ if __name__ == "__main__":
         port=int(os.environ.get("PORT", os.environ.get("APP_PORT", "5000"))),
         debug=False,
     )
+
 
 
